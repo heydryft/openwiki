@@ -36,10 +36,10 @@ sources:
     resource: repo://src/integrations/install/registry.ts
   - id: openwiki-source-349c953869b025f9d4935470
     resource: repo://src/platform/language.ts
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T08:15:00.712Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-25T08:08:20.625Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T08:15:00.712Z
+    at: 2026-10-25T08:08:20.625Z
 ---
 
 # OpenWiki Quickstart
@@ -189,13 +189,13 @@ the canonical wiki pages; each one links into the deeper source map.
 | --------------------------------------------------------------------------- | ------------------------------------------------ |
 | Run OpenWiki inside IBM Bob, Codex, Claude Code, OpenCode, Cursor, Kiro, Oh My Pi, Antigravity CLI, or GitHub Copilot CLI | [Coding-Agent Integrations](./integrations/coding-agents.md) |
 | Understand the built-in source connectors, the ConnectorRuntime contract, and how to add a new one | [Source Connectors](./integrations/connectors.md) |
-| Explore the interactive graph visualizer (live server and static export)    | [Interactive Visualizer](./integrations/visualizer.md) |
+| Explore the interactive graph visualizer — the `graph-types.ts` graph data model, live loopback server, and self-contained static export | [Interactive Visualizer](./integrations/visualizer.md) |
 
 ### Test your changes
 
 | I want to…                                                | Read                                           |
 | --------------------------------------------------------- | ---------------------------------------------- |
-| Understand the test layout and how to run and scope tests | [Testing Guide](./testing/overview.md) |
+| Understand the test layout, the `pnpm test` pipeline (typecheck → build → coverage), and how to scope the narrowest validation | [Testing Guide](./testing/overview.md) |
 | Understand the LEDGER longitudinal evaluation framework and DeepSWE evaluation harness | [Evaluation Systems](./testing/evals.md) |
 
 ## Where OpenWiki keeps its state

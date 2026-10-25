@@ -3,9 +3,6 @@ type: integration
 title: Interactive Visualizer
 description: How the `openwiki visualize` command builds a link graph from wiki Markdown and OKF frontmatter, serves a live single-page reader over loopback HTTP, and exports a self-contained static site for hosting.
 tags: [visualizer, graph, static-export, cli, server, markdown-reader]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T08:15:00.712Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
@@ -19,6 +16,8 @@ sources:
     resource: repo://src/visualize/client-lib.ts
   - id: openwiki-source-610ff51ff8da46ab065496a5
     resource: repo://src/visualize/client.ts
+  - id: openwiki-source-37e0e714b8257069ec052301
+    resource: repo://src/visualize/graph-types.ts
   - id: openwiki-source-d92f623adbf6b31c3542d58d
     resource: repo://src/visualize/graph.ts
   - id: openwiki-source-b0d5ccee7e5f7532bd8ed3f5
@@ -39,7 +38,10 @@ sources:
     resource: repo://test/visualize/visualize-client-lib.test.ts
   - id: openwiki-source-42403648c3f500ce06398039
     resource: repo://tsconfig.client.json
-generated: { by: "openwiki/0.5.2", at: "2026-09-22T08:09:45.637Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-25T08:08:20.625Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-25T08:08:20.625Z
 ---
 
 # Interactive Visualizer
@@ -66,6 +68,16 @@ otherwise it calls `runVisualizeServer`. Both wiki paths are resolved against th
 current working directory before use.
 
 ## Building the graph
+
+The graph's data model lives in `src/visualize/graph-types.ts`, a dependency-free
+type module that owns the four shared interfaces — `WikiMeta`, `WikiNode`,
+`WikiEdge`, and `WikiGraph`. It declares no Node.js APIs, so it can be consumed by
+the browser bundle without dragging the Node-only graph loader into it. Both the
+server-side builder and the browser client import their graph types from
+`./graph-types.js`: `graph.ts` imports them and re-exports them (`export type {
+WikiEdge, WikiGraph, WikiMeta, WikiNode } from "./graph-types.js"`), while
+`client.ts` and `client-lib.ts` import the types directly. This split keeps the
+browser graph types independent of the Node.js graph loader.
 
 `buildGraph(wikiRoot)` in `src/visualize/graph.ts` is the shared data source for
 both modes. It recursively collects `.md` files under the wiki root, reads each
@@ -248,7 +260,10 @@ The pure, DOM-independent helpers used by the client — `escapeHtml`,
 `colorsForTypes`, `nodeRadius`, `signature`, `matchesFilter`, `normalize`,
 `stripFrontmatter`, `hexA`, and `shouldShowNodeLabel` (with its
 `NodeLabelContext` interface) — live in `src/visualize/client-lib.ts` so they can
-be unit-tested directly without a browser. `shouldShowNodeLabel` decides whether
+be unit-tested directly without a browser. Both `client.ts` and `client-lib.ts`
+import their `WikiGraph`/`WikiNode` types from `./graph-types.js` rather than from
+`./graph.js`, so the compiled client bundle stays free of the Node-only graph
+loader. `shouldShowNodeLabel` decides whether
 a node label should be painted on the canvas based on interaction context: when
 nothing is selected, only the hovered node's label shows; when a node is
 selected, the selected node plus its immediate neighbours show labels; unrelated
@@ -279,9 +294,13 @@ Markdown and rendering in its shipped typeface.
 ## Build pipeline and assets
 
 The client TypeScript is compiled separately from the server code. The `build`
-script in `package.json` runs `tsc -p tsconfig.json`, then `tsc -p
-tsconfig.client.json` (which compiles `client.ts` and its imported `client-lib.ts`
-with DOM libs enabled), and finally `node scripts/copy-visualize-assets.cjs`. That
+script in `package.json` runs three stages: `tsc -p tsconfig.json` (the server and
+agent code), then `tsc -p tsconfig.client.json` (which compiles `client.ts` and
+its imported `client-lib.ts` with DOM libs enabled), and finally
+`node scripts/copy-visualize-assets.cjs`. Both `tsc` invocations use the pinned
+`typescript7` compiler (`node ./node_modules/typescript7/bin/tsc`), and the
+client compile roots at `src/visualize/client.ts`, which pulls its graph types
+from `graph-types.ts` rather than the Node-only `graph.ts`. That
 last step exists because `styles.css` is a hand-authored asset TypeScript does not
 emit: the copy script explicitly copies `src/visualize/styles.css` into
 `dist/visualize/styles.css` and fails the build if the source is missing, the

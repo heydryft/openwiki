@@ -140,10 +140,10 @@ sources:
     resource: repo://tsconfig.json
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T08:15:00.712Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-25T08:08:20.625Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T08:15:00.712Z
+    at: 2026-10-25T08:08:20.625Z
 ---
 
 # Testing Guide
@@ -161,11 +161,15 @@ while preserving complete failure output.
   dependencies; there is no separate framework. Tests import `describe`,
   `expect`, `test`, `vi`, and the `beforeEach`/`afterEach` hooks directly from
   `vitest`.
-- **Ink component tests: ink-testing-library.** Terminal UI written with Ink is
-  exercised by rendering React components with `render` from
+- **Ink component tests: ink-testing-library (React 19).** Terminal UI written
+  with Ink is exercised by rendering React 19 components with `render` from
   `ink-testing-library` and asserting on the rendered frame (`lastFrame()`).
-  These tests are the `.tsx` files under `test/cli/components/` and
-  `test/setup/credentials/`.
+  The app and its tests both run on `react@^19` with the React-19-compatible
+  `ink-testing-library@^4`, and assertions strip ANSI first so they match plain
+  text. These tests are the `.tsx` files under `test/cli/components/` (for
+  example `chat.test.tsx`, `primitives.test.tsx`,
+  `wiki-workspace-manager.test.tsx`) and `test/setup/credentials/` (for example
+  `init-setup-entra.test.tsx`, `init-setup-langsmith-skip.test.tsx`).
 - **No global config beyond `vitest.config.ts`.** Test discovery keeps Vitest's
   defaults; the only tuning is one discovery exclusion and the coverage block
   (see below).

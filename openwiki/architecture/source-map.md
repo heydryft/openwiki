@@ -102,16 +102,20 @@ sources:
     resource: repo://src/telemetry/index.ts
   - id: openwiki-source-04684180af5ec3c4b1911941
     resource: repo://src/telemetry/taxonomy.ts
+  - id: openwiki-source-ece93fbb8cb5e37f8a4eb963
+    resource: repo://src/visualize/client-lib.ts
+  - id: openwiki-source-610ff51ff8da46ab065496a5
+    resource: repo://src/visualize/client.ts
+  - id: openwiki-source-37e0e714b8257069ec052301
+    resource: repo://src/visualize/graph-types.ts
   - id: openwiki-source-d92f623adbf6b31c3542d58d
     resource: repo://src/visualize/graph.ts
-  - id: openwiki-source-4d856d692c32be213c8c46b4
-    resource: repo://src/visualize/server.ts
   - id: openwiki-source-d485c898eb60ebb173072eab
     resource: repo://test/agent/stream-redaction.test.ts
-generated: { by: "openwiki/0.7.1", at: "2026-10-07T08:10:39.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-25T08:08:20.625Z" }
 verified:
-  - by: openwiki/0.7.1
-    at: 2026-10-07T08:10:39.081Z
+  - by: openwiki/0.7.2
+    at: 2026-10-25T08:08:20.625Z
 ---
 
 # Source Map
@@ -564,6 +568,10 @@ locations.
 
 Owns the interactive wiki/graph viewer. `src/visualize/server.ts`
 (`createRequestHandler`) serves the app; `graph.ts` builds the graph model;
+`graph-types.ts` is the shared type module that both the Node graph loader
+(`graph.ts`) and the browser client (`client.ts`, `client-lib.ts`) import
+their graph types from (`WikiGraph`, `WikiNode`, `WikiEdge`, `WikiMeta`),
+keeping browser graph types independent of the Node.js graph loader;
 `page.ts`, `client.ts`, `client-lib.ts`, and `static-export.ts` render and export
 it.
 
